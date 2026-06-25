@@ -14,6 +14,31 @@ public class Court {
     private String sport;
     private boolean outdoor;
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getSport() {
+        return sport;
+    }
+
+    public boolean isOutdoor() {
+        return outdoor;
+    }
+
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setSport(String sport) {
+        this.sport = sport;
+    }
+
+    public void setOutdoor(boolean outdoor) {
+        this.outdoor = outdoor;
+    }
+
     public Court(){
 
     }
