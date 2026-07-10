@@ -1,9 +1,6 @@
 package sk.plevka.courtbooking;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Court {
@@ -11,14 +8,15 @@ public class Court {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
-    private String sport;
+    @Enumerated(EnumType.STRING)
+    private Sport sport;
     private boolean outdoor;
 
     public Long getId() {
         return id;
     }
 
-    public String getSport() {
+    public Sport getSport() {
         return sport;
     }
 
@@ -31,7 +29,7 @@ public class Court {
         this.id = id;
     }
 
-    public void setSport(String sport) {
+    public void setSport(Sport sport) {
         this.sport = sport;
     }
 
