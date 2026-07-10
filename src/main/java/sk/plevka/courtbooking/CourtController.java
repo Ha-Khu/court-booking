@@ -26,4 +26,12 @@ public class CourtController {
         public void delCourt(@PathVariable Long id){
         courtRepository.deleteById(id);
     }
+
+    @PutMapping("/courts/{id}")
+        public Court updateCourt(@PathVariable Long id, @RequestBody Court newData){
+        Court court = courtRepository.findById(id).orElseThrow();
+        court.setSport(newData.getSport());
+        court.setOutdoor(newData.isOutdoor());
+        return courtRepository.save(court);
+    }
 }
