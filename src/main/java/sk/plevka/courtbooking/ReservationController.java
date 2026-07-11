@@ -1,6 +1,8 @@
 package sk.plevka.courtbooking;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,6 +21,12 @@ public class ReservationController {
 
     @PostMapping("/reservations")
     public Reservation addReservation(@RequestBody Reservation reservation){
-        return reservationRepository.save(reservation);
+        boolean conflict = reservationRepository.existsByCourtAndStartTime(
+                reservation.getCourt(), reservation.getStartTime()
+                );
+                if(conflict){
+                  throw new ResponseStatusException(HttpStatus.CONFLICT, "Court is occupied");
+                }
+                return reservationRepository.save(reservation);
     }
 }
