@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,5 +29,17 @@ public class ReservationController {
                   throw new ResponseStatusException(HttpStatus.CONFLICT, "Court is occupied");
                 }
                 return reservationRepository.save(reservation);
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public void delReservation(@PathVariable Long id){
+        LocalDateTime now = LocalDateTime.now();
+        Reservation r = reservationRepository.findById(id).orElseThrow();
+
+        if(r.getStartTime().isBefore(now)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Already started");
+        }
+
+        reservationRepository.deleteById(id);
     }
 }
