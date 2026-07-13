@@ -1,5 +1,6 @@
 package sk.plevka.courtbooking;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class User {
 
     private String username;
     private String email;
+    @JsonIgnore
     private String password;
 
     public Long getId() {
