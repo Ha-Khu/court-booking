@@ -11,10 +11,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UserController(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -29,6 +31,20 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         return userRepository.save(user);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody User loginData){
+        User user = userRepository.findByEmail(loginData.getEmail()).orElseThrow();
+
+        boolean result = passwordEncoder.matches(loginData.getPassword(), user.getPassword());
+
+        if(!result){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        return jwtUtil.generateToken(user.getEmail());
+
     }
 
 }
