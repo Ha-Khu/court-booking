@@ -1,5 +1,6 @@
 package sk.plevka.courtbooking;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -10,9 +11,11 @@ import java.util.List;
 @RestController
 public class ReservationController {
     private final ReservationRepository reservationRepository;
+    private final UserRepository userRepository;
 
-    public ReservationController(ReservationRepository reservationRepository){
+    public ReservationController(ReservationRepository reservationRepository, UserRepository userRepository){
         this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/reservations")
@@ -21,7 +24,11 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public Reservation addReservation(@RequestBody Reservation reservation){
+    public Reservation addReservation(@RequestBody Reservation reservation, Authentication auth){
+        String email = auth.getName();
+        User user = userRepository.findByEmail(email).orElseThrow();
+        reservation.setUser(user);
+
         boolean conflict = reservationRepository.existsByCourtAndStartTime(
                 reservation.getCourt(), reservation.getStartTime()
                 );

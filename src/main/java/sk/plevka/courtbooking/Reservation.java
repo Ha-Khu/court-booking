@@ -13,6 +13,9 @@ public class Reservation {
     @ManyToOne
     private Court court;
 
+    @ManyToOne
+    private User user;
+
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
@@ -26,6 +29,10 @@ public class Reservation {
 
     public LocalDateTime getEndTime() {
         return endTime;
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public Court getCourt() {
@@ -46,6 +53,10 @@ public class Reservation {
 
     public void setCourt(Court court) {
         this.court = court;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Reservation(){
