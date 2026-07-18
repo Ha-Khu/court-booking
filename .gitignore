@@ -33,3 +33,4 @@ build/
 .vscode/
 
 *.http
+ws-test.html

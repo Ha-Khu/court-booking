@@ -1,5 +1,6 @@
 package sk.plevka.courtbooking;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +13,12 @@ import java.util.List;
 public class ReservationController {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public ReservationController(ReservationRepository reservationRepository, UserRepository userRepository){
+    public ReservationController(ReservationRepository reservationRepository, UserRepository userRepository, SimpMessagingTemplate messagingTemplate){
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/reservations")
@@ -35,7 +38,9 @@ public class ReservationController {
                 if(conflict){
                   throw new ResponseStatusException(HttpStatus.CONFLICT, "Court is occupied");
                 }
-                return reservationRepository.save(reservation);
+                Reservation saved = reservationRepository.save(reservation);
+                messagingTemplate.convertAndSend("/topic/reservations", saved);
+                return saved;
     }
 
     @DeleteMapping("/reservations/{id}")
