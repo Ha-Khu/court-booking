@@ -5,6 +5,8 @@ import { Client } from '@stomp/stompjs'
 
 function ReservationList(){
     const [reservations, setReservations] = useState([])
+    const [courts, setCourts] = useState([])
+    const [selectedCourt, setSelectedCourt] = useState("")
     const [error, setError] = useState("")
 
     async function loadReservations(){
@@ -30,11 +32,12 @@ function ReservationList(){
                 "Authorization": "Bearer " + token
             },
             body: JSON.stringify({
-                court: {id: 1},
-                startTime: "2026-10-10T10:00:00",
-                endTime: "2026-10-10T11:30:00"
+                court: {id: selectedCourt},
+                startTime: "2027-03-20T08:00:00",
+                endTime: '2027-03-20T09:30:00'
             })
         })
+        console.log(await res.clone().text())
         if(res.status === 403){
             localStorage.removeItem("token")
             window.location.reload()
@@ -47,7 +50,23 @@ function ReservationList(){
         loadReservations()
     }
 
+    async function loadCourt(){
+        const token = localStorage.getItem("token")
+        console.log("TOKEN:", token)
+        const res = await fetch("http://localhost:8080/courts", {
+            headers: {"Authorization": "Bearer " + token}
+        })
+        if(res.status === 403){
+            localStorage.removeItem("token")
+            window.location.reload()
+            return
+        }
+        const data = await res.json()
+        setCourts(data)
+    }
+
     useEffect(() => {
+        loadCourt()
         const client = new Client({
             webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
             onConnect: () => {
@@ -69,6 +88,14 @@ function ReservationList(){
                     </div>
                 ))}
             </div>
+            <select value={selectedCourt} onChange={(e) => setSelectedCourt((e.target.value))}>
+                <option value={""}>-- Choose Court --</option>
+                {courts.map((court)=>(
+                    <option key={court.id} value={court.id}>
+                        {court.sport} {court.outdoor ? "(outdoor)" : "(indoor)"}
+                    </option>
+                ))}
+            </select>
             <div>
                 <button onClick={loadReservations}>Load reservations</button>
                 <button onClick={createReservation}>Reserve</button>
