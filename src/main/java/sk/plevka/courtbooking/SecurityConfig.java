@@ -25,6 +25,7 @@ public class SecurityConfig {
                     config.setAllowedOrigins(java.util.List.of("http://localhost:5173"));
                     config.setAllowedMethods(java.util.List.of("*"));
                     config.setAllowedHeaders(java.util.List.of("*"));
+                    config.setAllowCredentials(true);
                     return config;
                 }))
                 .authorizeHttpRequests(auth -> auth

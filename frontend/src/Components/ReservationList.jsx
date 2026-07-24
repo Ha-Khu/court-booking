@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { useEffect } from 'react'
+import SockJS from 'sockjs-client'
+import { Client } from '@stomp/stompjs'
 
 function ReservationList(){
     const [reservations, setReservations] = useState([])
@@ -33,6 +36,19 @@ function ReservationList(){
         }
         loadReservations()
     }
+
+    useEffect(() => {
+        const client = new Client({
+            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+            onConnect: () => {
+                client.subscribe("/topic/reservations", () => {
+                    loadReservations()
+                })
+            }
+        })
+        client.activate()
+        return () => client.deactivate()
+    }, [])
 
     return(
         <div>
