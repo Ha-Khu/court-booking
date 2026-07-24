@@ -9,6 +9,11 @@ function CourtList() {
         const res = await fetch("http://localhost:8080/courts", {
             headers: {"Authorization": "Bearer " + token}
         })
+        if(res.status === 403){
+            localStorage.removeItem("token")
+            window.location.reload()
+            return
+        }
         const data = await res.json()
         setCourts(data)
     }

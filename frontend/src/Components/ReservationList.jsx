@@ -12,6 +12,11 @@ function ReservationList(){
         const res = await fetch("http://localhost:8080/reservations",{
             headers: {Authorization: "Bearer " + token}
         })
+        if(res.status === 403){
+            localStorage.removeItem("token")
+            window.location.reload()
+            return
+        }
         const data = await res.json()
         setReservations(data)
     }
@@ -30,6 +35,11 @@ function ReservationList(){
                 endTime: "2026-10-10T11:30:00"
             })
         })
+        if(res.status === 403){
+            localStorage.removeItem("token")
+            window.location.reload()
+            return
+        }
         if(!res.ok){
             setError("Slot obsadený")
             return
