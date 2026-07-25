@@ -24,6 +24,10 @@ function ReservationList(){
     }
 
     async function createReservation(){
+        if(!selectedCourt){
+            setError("Choose Court")
+            return
+        }
         const token = localStorage.getItem("token")
         const res = await fetch("http://localhost:8080/reservations",{
             method: "POST",
@@ -37,7 +41,6 @@ function ReservationList(){
                 endTime: '2027-03-20T09:30:00'
             })
         })
-        console.log(await res.clone().text())
         if(res.status === 403){
             localStorage.removeItem("token")
             window.location.reload()
@@ -52,7 +55,6 @@ function ReservationList(){
 
     async function loadCourt(){
         const token = localStorage.getItem("token")
-        console.log("TOKEN:", token)
         const res = await fetch("http://localhost:8080/courts", {
             headers: {"Authorization": "Bearer " + token}
         })

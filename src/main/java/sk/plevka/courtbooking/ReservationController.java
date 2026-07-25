@@ -1,5 +1,6 @@
 package sk.plevka.courtbooking;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,7 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations")
-    public Reservation addReservation(@RequestBody Reservation reservation, Authentication auth){
+    public ResponseEntity<?> addReservation(@RequestBody Reservation reservation, Authentication auth){
         String email = auth.getName();
         User user = userRepository.findByEmail(email).orElseThrow();
         reservation.setUser(user);
@@ -36,11 +37,11 @@ public class ReservationController {
                 reservation.getCourt(), reservation.getStartTime()
                 );
                 if(conflict){
-                  throw new ResponseStatusException(HttpStatus.CONFLICT, "Court is occupied");
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Court is occupied");
                 }
                 Reservation saved = reservationRepository.save(reservation);
                 messagingTemplate.convertAndSend("/topic/reservations", saved);
-                return saved;
+                return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/reservations/{id}")
