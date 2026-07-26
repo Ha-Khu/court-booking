@@ -7,6 +7,7 @@ function ReservationList(){
     const [reservations, setReservations] = useState([])
     const [courts, setCourts] = useState([])
     const [selectedCourt, setSelectedCourt] = useState("")
+    const [selectedSlot, setSelectedSlot] = useState("")
     const [error, setError] = useState("")
 
     async function loadReservations(){
@@ -28,6 +29,9 @@ function ReservationList(){
             setError("Choose Court")
             return
         }
+        const start = selectedSlot
+        const endDate = new Date(new Date(selectedSlot).getTime() + 90 * 60 * 1000)
+        const end = endDate.toISOString().slice(0, 19)
         const token = localStorage.getItem("token")
         const res = await fetch("http://localhost:8080/reservations",{
             method: "POST",
@@ -37,8 +41,8 @@ function ReservationList(){
             },
             body: JSON.stringify({
                 court: {id: selectedCourt},
-                startTime: "2027-03-20T08:00:00",
-                endTime: '2027-03-20T09:30:00'
+                startTime: start,
+                endTime: end
             })
         })
         if(res.status === 403){
@@ -90,7 +94,13 @@ function ReservationList(){
                     </div>
                 ))}
             </div>
-            <select value={selectedCourt} onChange={(e) => setSelectedCourt((e.target.value))}>
+            <select value={selectedSlot} onChange={(e) => setSelectedSlot(e.target.value)}>
+                <option value="">-- Choose time --</option>
+                <option value="2026-08-10T08:00:00">10.8. 08:00 - 09:30</option>
+                <option value="2026-08-10T10:00:00">10.8. 10:00 - 11:30</option>
+                <option value="2026-08-10T12:00:00">10.8. 12:00 - 13:30</option>
+            </select>
+            <select value={selectedCourt} onChange={(e) => setSelectedCourt(e.target.value)}>
                 <option value={""}>-- Choose Court --</option>
                 {courts.map((court)=>(
                     <option key={court.id} value={court.id}>
