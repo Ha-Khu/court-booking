@@ -45,14 +45,22 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public void delReservation(@PathVariable Long id){
+    public ResponseEntity<?> delReservation(@PathVariable Long id, Authentication auth){
         LocalDateTime now = LocalDateTime.now();
         Reservation r = reservationRepository.findById(id).orElseThrow();
+        String email = auth.getName();
+        String ownerEmail = r.getUser().getEmail();
+
+        if(!email.equals(ownerEmail)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not your reservation");
+        }
 
         if(r.getStartTime().isBefore(now)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Already started");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Already started");
         }
 
         reservationRepository.deleteById(id);
+        messagingTemplate.convertAndSend("/topic/reservations", "deleted");
+        return ResponseEntity.ok().build();
     }
 }

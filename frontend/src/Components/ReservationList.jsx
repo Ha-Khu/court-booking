@@ -57,6 +57,20 @@ function ReservationList(){
         loadReservations()
     }
 
+    async function deleteReservation(id){
+        const token = localStorage.getItem("token")
+        const res = await fetch(`http://localhost:8080/reservations/${id}`, {
+            method: "DELETE",
+            headers:{"Authorization": "Bearer " + token}
+        })
+        if(!res.ok){
+            const msg = await res.text()
+            setError(msg || "Cant delete this reservation")
+            return
+        }
+        loadReservations()
+    }
+
     async function loadCourt(){
         const token = localStorage.getItem("token")
         const res = await fetch("http://localhost:8080/courts", {
@@ -91,6 +105,7 @@ function ReservationList(){
                 {reservations.map((r)=>(
                     <div key={r.id}>
                          {r.startTime} - {r.court?.sport} - {r.user?.username}
+                         <button onClick={() => deleteReservation(r.id)}>Delete</button>
                     </div>
                 ))}
             </div>
