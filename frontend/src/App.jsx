@@ -26,6 +26,12 @@ function App() {
         <div>
             <CourtList/>
             <ReservationList/>
+            <button onClick={() => {
+                localStorage.removeItem("token")
+                setToken(null)
+            }}>
+                Logout
+            </button>
         </div>
     )
 }
