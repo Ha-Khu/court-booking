@@ -27,6 +27,11 @@ public class ReservationController {
         return reservationRepository.findAll();
     }
 
+    @GetMapping("/reservations/court/{courtId}")
+    public List<Reservation> getByCourt(@PathVariable Long courtId){
+        return reservationRepository.findByCourtId(courtId);
+    }
+
     @PostMapping("/reservations")
     public ResponseEntity<?> addReservation(@RequestBody Reservation reservation, Authentication auth){
         String email = auth.getName();
