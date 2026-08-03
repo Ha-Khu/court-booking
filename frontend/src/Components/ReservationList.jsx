@@ -59,7 +59,7 @@ function ReservationList(){
     async function loadReservations(courtId){
         if(!courtId) return
         const token = localStorage.getItem("token")
-        const res = await fetch(`http://localhost:8080/reservations/court/${courtId}`,{ headers: { Authorization: "Bearer " + token } })
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/reservations/court/${courtId}`,{ headers: { Authorization: "Bearer " + token } })
         if(res.status === 403){ localStorage.removeItem("token"); window.location.reload(); return }
         setReservations(await res.json())
     }
@@ -69,7 +69,7 @@ function ReservationList(){
         const token = localStorage.getItem("token")
         const start = toLocalIso(slotDate)
         const end = toLocalIso(new Date(slotDate.getTime() + SLOT * 60000))
-        const res = await fetch("http://localhost:8080/reservations",{
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/reservations`,{
             method: "POST",
             headers:{ "Content-Type": "application/json", "Authorization": "Bearer " + token },
             body: JSON.stringify({ court: { id: selectedCourt }, startTime: start, endTime: end })
@@ -82,7 +82,7 @@ function ReservationList(){
     async function deleteReservation(id){
         setError("")
         const token = localStorage.getItem("token")
-        const res = await fetch(`http://localhost:8080/reservations/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/reservations/${id}`, {
             method: "DELETE", headers:{ "Authorization": "Bearer " + token }
         })
         if(!res.ok){ setError(await res.text() || "Can't cancel"); return }
@@ -91,7 +91,7 @@ function ReservationList(){
 
     async function loadCourt(){
         const token = localStorage.getItem("token")
-        const res = await fetch("http://localhost:8080/courts", { headers: { "Authorization": "Bearer " + token } })
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/courts`, { headers: { "Authorization": "Bearer " + token } })
         if(res.status === 403){ localStorage.removeItem("token"); window.location.reload(); return }
         const data = await res.json()
         setCourts(data)
@@ -103,7 +103,7 @@ function ReservationList(){
 
     useEffect(() => {
         const client = new Client({
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+            webSocketFactory: () => new SockJS(`${import.meta.env.VITE_API_URL}/ws`),
             onConnect: () => client.subscribe("/topic/reservations", () => loadReservations(selectedCourt))
         })
         client.activate()

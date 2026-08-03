@@ -7,7 +7,7 @@ function CourtList() {
 
     async function loadCourt(){
         const token = localStorage.getItem("token")
-        const res = await fetch("http://localhost:8080/courts", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/courts`, {
             headers: { "Authorization": "Bearer " + token }
         })
         if(res.status === 403){ localStorage.removeItem("token"); window.location.reload(); return }
