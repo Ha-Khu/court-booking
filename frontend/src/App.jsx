@@ -1,8 +1,8 @@
 import { useState } from "react"
-import Login from "./Components/Login"
-import Register from "./Components/Register.jsx"
-import CourtList from "./Components/CourtList.jsx"
-import ReservationList from "./Components/ReservationList.jsx"
+import Login from "./components/Login"
+import Register from "./components/Register.jsx"
+import CourtList from "./components/CourtList.jsx"
+import ReservationList from "./components/ReservationList.jsx"
 import { Button } from "@/components/ui/button"
 
 function App() {
