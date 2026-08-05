@@ -48,7 +48,7 @@ The frontend authenticates against the backend and stores a JWT. Every protected
 
 ##  Screenshots
 
-Will be added soon...
+![Court Booking screenshot](img/court_booking.png)
 
 ##  Running locally
 
