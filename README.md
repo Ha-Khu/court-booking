@@ -4,6 +4,7 @@ A full-stack, real-time court reservation system for padel, tennis and squash co
 
 **🔗 Live demo:** [court-booking-wheat.vercel.app](https://court-booking-wheat.vercel.app)
 
+> **Demo account** — email: `user@test.com` · password: `user123`
 > ⏳ The backend runs on a free Render instance that sleeps when idle — the first request after a while may take ~30–50 seconds to wake up.
 
 ---
